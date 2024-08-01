@@ -3,6 +3,9 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config({ path: '.env' });
 
+// apis
+const usersApi = require('./api/users');
+
 const app = express();
 const pool = require('./db');
 const port = process.env.PORT || 3001;
@@ -22,20 +25,7 @@ nextApp
     app.use(express.static(path.join(__dirname, '../', 'public')));
 
     // express router setting
-    app.use('/api', (req, res, next) => {
-      res.send('api test');
-    })
-
-    app.get('/users', async (req, res) => {
-      try {
-        const [rows] = await pool.query(
-          'SELECT user_no, login_id, name FROM tb_user'
-        );
-        res.json(rows);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
+    app.use('/api', usersApi);
 
     // next.js routing
     app.get('/', (req, res) => {
